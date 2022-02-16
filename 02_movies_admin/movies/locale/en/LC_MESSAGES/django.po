@@ -1,0 +1,103 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-13 02:29+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: apps.py:8
+msgid "Movies"
+msgstr "Movies"
+
+#: models.py:30
+msgid "ФИО"
+msgstr "FULL NAME"
+
+#: models.py:35
+msgid "актер"
+msgstr "person"
+
+#: models.py:36
+msgid "актеры"
+msgstr "persons"
+
+#: models.py:43
+msgid "название"
+msgstr "name"
+
+#: models.py:44 models.py:64
+msgid "описание"
+msgstr "description"
+
+#: models.py:49
+msgid "жанр"
+msgstr "genre"
+
+#: models.py:50
+msgid "жанры"
+msgstr "genres"
+
+#: models.py:59
+msgid "Фильм"
+msgstr "Movie"
+
+#: models.py:60
+msgid "ТВ шоу"
+msgstr "TV Show"
+
+#: models.py:63
+msgid "заголовок"
+msgstr "title"
+
+#: models.py:65
+msgid "дата производства"
+msgstr "creation date"
+
+#: models.py:66
+msgid "рейтинг"
+msgstr "rating"
+
+#: models.py:69
+msgid "тип"
+msgstr "type"
+
+#: models.py:75
+msgid "кинопроизведение"
+msgstr "filmwork"
+
+#: models.py:76
+msgid "кинопроизведения"
+msgstr "filmworks"
+
+#: models.py:89
+msgid "жанр фильма"
+msgstr "filmwork genre"
+
+#: models.py:90
+msgid "жанры фильма"
+msgstr "filmwork genres"
+
+#: models.py:96
+msgid "роль"
+msgstr "role"
+
+#: models.py:101
+msgid "актёр фильма"
+msgstr "filmwork person"
+
+#: models.py:102
+msgid "актёры фильма"
+msgstr "filmwork persons"
