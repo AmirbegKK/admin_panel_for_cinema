@@ -22,6 +22,7 @@ class UUIDMixin(models.Model):
 
 class Person(UUIDMixin, TimeStampMixin):
     full_name = models.CharField(_('ФИО'), max_length=255)
+    birth_date = models.DateField(_('день рождения'), blank=True, null=True)
     filmworks = models.ManyToManyField('Filmwork', through='PersonFilmwork')
 
     class Meta:
@@ -57,6 +58,8 @@ class Filmwork(UUIDMixin, TimeStampMixin):
     title = models.CharField(_('заголовок'), max_length=255)
     description = models.TextField(_('описание'), blank=True)
     creation_date = models.DateField(_('дата производства'), blank=True)
+    certificate = models.TextField(_('сертификат'), blank=True)
+    file_path = models.TextField(_('путь к файлу'), blank=True)
     rating = models.FloatField(_('рейтинг'), blank=True,
                                 validators=[MinValueValidator(0),
                                             MaxValueValidator(100)])
