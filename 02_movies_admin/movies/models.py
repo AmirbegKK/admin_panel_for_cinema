@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class TimeStampMixin(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    modified = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         abstract = True
@@ -36,7 +36,7 @@ class Person(UUIDMixin, TimeStampMixin):
 
 class Genre(UUIDMixin, TimeStampMixin):
     name = models.CharField(_('название'), max_length=255)
-    description = models.TextField(_('описание'), blank=True)
+    description = models.TextField(_('описание'), blank=True, null=True)
     filmworks = models.ManyToManyField('Filmwork', through='GenreFilmwork')
 
     class Meta:
@@ -56,13 +56,13 @@ class Filmwork(UUIDMixin, TimeStampMixin):
 
 
     title = models.CharField(_('заголовок'), max_length=255)
-    description = models.TextField(_('описание'), blank=True)
-    creation_date = models.DateField(_('дата производства'), blank=True)
-    certificate = models.TextField(_('сертификат'), blank=True)
-    file_path = models.TextField(_('путь к файлу'), blank=True)
-    rating = models.FloatField(_('рейтинг'), blank=True,
+    description = models.TextField(_('описание'), blank=True, null=True)
+    creation_date = models.DateField(_('дата производства'), blank=True, null=True)
+    certificate = models.TextField(_('сертификат'), blank=True, null=True)
+    file_path = models.TextField(_('путь к файлу'), blank=True, null=True)
+    rating = models.FloatField(_('рейтинг'), blank=True, null=True,
                                 validators=[MinValueValidator(0),
-                                            MaxValueValidator(100)])
+                                            MaxValueValidator(10)])
     type = models.CharField(_('тип'),default=Genres.MOVIE, max_length=128, choices=Genres.choices)
     genres = models.ManyToManyField(Genre, through='GenreFilmwork')
     persons = models.ManyToManyField(Person, through='PersonFilmwork')
