@@ -26,7 +26,7 @@ class PostgresSaver:
                     self.connection.cursor().execute("""
                 insert into content.film_work
                 (id, title, description, creation_date, certificate, file_path, rating, type, created, modified)
-                VALUES (%s, %s,%s,%s,%s,%s,%s,%s,%s,%s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (id) DO NOTHING
                 """, row)
 
@@ -77,10 +77,8 @@ class SQLiteLoader:
         self.connection.row_factory = sqlite3.Row
         cursor = self.connection.cursor()
         cursor.execute(f'SELECT * FROM {table_name}')  # noqa: S608
-        records_count = cursor.__sizeof__()
-        while records_count > 0:
-            yield cursor.fetchmany(20)
-            records_count -= 20
+        while data := cursor.fetchmany(20):
+            yield data
 
     def load_data(self):
         try:
