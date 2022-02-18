@@ -1,13 +1,15 @@
 import logging
 import os
 import sqlite3
-from dataclasses import dataclass
 from contextlib import closing
+from dataclasses import dataclass
+
 
 import psycopg2
+from dotenv import load_dotenv
 from psycopg2.extensions import connection as _connection
 from psycopg2.extras import DictCursor
-from dotenv import load_dotenv
+
 
 BATCH_SIZE = 50
 
@@ -36,7 +38,7 @@ class PostgresSaver:
             for rows in data.movies:
                 # This approach more faster then execute_batch() from psycopg.extras
                 # https://www.datacareer.de/blog/improve-your-psycopg2-executions-for-postgresql-in-python/
-                args = self._get_args(rows, "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+                args = self._get_args(rows, '(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)')
                 self.cursor.execute(f"""
                 INSERT INTO content.film_work
                 (id, title, description, creation_date, certificate, file_path, rating, type, created, modified)
