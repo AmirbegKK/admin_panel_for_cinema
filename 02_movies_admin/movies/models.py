@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import uuid
 
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -19,8 +20,12 @@ class UUIDMixin(models.Model):
     class Meta:
         abstract = True
 
+class BaseMixin(UUIDMixin, TimeStampMixin):
+    class Meta:
+        abstract = True
 
-class Person(UUIDMixin, TimeStampMixin):
+
+class Person(BaseMixin):
     full_name = models.CharField(_('ФИО'), max_length=255)
     birth_date = models.DateField(_('день рождения'), blank=True, null=True)
     filmworks = models.ManyToManyField('Filmwork', through='PersonFilmwork')
@@ -34,7 +39,7 @@ class Person(UUIDMixin, TimeStampMixin):
         return self.full_name
 
 
-class Genre(UUIDMixin, TimeStampMixin):
+class Genre(BaseMixin):
     name = models.CharField(_('название'), max_length=255)
     description = models.TextField(_('описание'), blank=True, null=True)
     filmworks = models.ManyToManyField('Filmwork', through='GenreFilmwork')
@@ -48,7 +53,7 @@ class Genre(UUIDMixin, TimeStampMixin):
         return self.name
 
 
-class Filmwork(UUIDMixin, TimeStampMixin):
+class Filmwork(BaseMixin):
     
     class Genres(models.TextChoices):
         MOVIE = 'movie', _('Фильм')
@@ -86,6 +91,13 @@ class GenreFilmwork(UUIDMixin):
         verbose_name = _('жанр фильма')
         verbose_name_plural = _('жанры фильма')
 
+        indexes = [
+            models.Index(fields=['film_work', 'genre'], name='filmwork_genre_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return _(f'Фильм {self.film_work} относится к жанру {self.genre}.')
+
 
 class PersonFilmwork(UUIDMixin):
     film_work = models.ForeignKey('Filmwork', on_delete=models.CASCADE)
@@ -97,3 +109,10 @@ class PersonFilmwork(UUIDMixin):
         db_table = "content\".\"person_film_work"
         verbose_name = _('актёр фильма')
         verbose_name_plural = _('актёры фильма')
+
+        indexes = [
+            models.Index(fields=['film_work', 'person', 'role'], name='filmwork_person_role_idx'),
+        ]
+    
+    def __str__(self) -> str:
+        return _(f'{self.person} сыграл роль {self.role} в фильме {self.film_work}.')

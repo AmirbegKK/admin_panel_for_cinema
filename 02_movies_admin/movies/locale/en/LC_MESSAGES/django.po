@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-17 01:14+0000\n"
+"POT-Creation-Date: 2022-02-18 13:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,96 +22,106 @@ msgstr ""
 msgid "Movies"
 msgstr "Movies"
 
-#: models.py:24
+#: models.py:29
 msgid "ФИО"
 msgstr "FULL NAME"
 
-#: models.py:25
+#: models.py:30
 #, fuzzy
 #| msgid "кинопроизведения"
 msgid "день рождения"
 msgstr "filmworks"
 
-#: models.py:30
+#: models.py:35
 msgid "актер"
 msgstr "person"
 
-#: models.py:31
+#: models.py:36
 msgid "актеры"
 msgstr "persons"
 
-#: models.py:38
+#: models.py:43
 msgid "название"
 msgstr "name"
 
-#: models.py:39 models.py:59
+#: models.py:44 models.py:64
 msgid "описание"
 msgstr "description"
 
-#: models.py:44
+#: models.py:49
 msgid "жанр"
 msgstr "genre"
 
-#: models.py:45
+#: models.py:50
 msgid "жанры"
 msgstr "genres"
 
-#: models.py:54
+#: models.py:59
 msgid "Фильм"
 msgstr "Movie"
 
-#: models.py:55
+#: models.py:60
 msgid "ТВ шоу"
 msgstr "TV Show"
 
-#: models.py:58
+#: models.py:63
 msgid "заголовок"
 msgstr "title"
 
-#: models.py:60
+#: models.py:65
 msgid "дата производства"
 msgstr "creation date"
 
-#: models.py:61
+#: models.py:66
 msgid "сертификат"
 msgstr "certificate"
 
-#: models.py:62
+#: models.py:67
 msgid "путь к файлу"
 msgstr "file path"
 
-#: models.py:63
+#: models.py:68
 msgid "рейтинг"
 msgstr "rating"
 
-#: models.py:66
+#: models.py:71
 msgid "тип"
 msgstr "type"
 
-#: models.py:72
+#: models.py:77
 msgid "кинопроизведение"
 msgstr "filmwork"
 
-#: models.py:73
+#: models.py:78
 msgid "кинопроизведения"
 msgstr "filmworks"
 
-#: models.py:86
+#: models.py:91
 msgid "жанр фильма"
 msgstr "filmwork genre"
 
-#: models.py:87
+#: models.py:92
 msgid "жанры фильма"
 msgstr "filmwork genres"
 
-#: models.py:93
+#: models.py:99
+#, python-brace-format
+msgid "Фильм {self.film_work} относится к жанру {self.genre}."
+msgstr "Movie {self.film_work} belongs to the genre {self.genre}."
+
+#: models.py:105
 msgid "роль"
 msgstr "role"
 
-#: models.py:98
+#: models.py:110
 msgid "актёр фильма"
 msgstr "filmwork person"
 
-#: models.py:99
+#: models.py:111
 msgid "актёры фильма"
 msgstr "filmwork persons"
+
+#: models.py:118
+#, python-brace-format
+msgid "{self.person} сыграл роль {self.role} в фильме {self.film_work}."
+msgstr "{self.person} played the role of {self.role} in the movie {self.film_work}."
