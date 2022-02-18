@@ -1,9 +1,15 @@
+import logging
+import os
 import sqlite3
 from dataclasses import dataclass
+from contextlib import closing
 
 import psycopg2
 from psycopg2.extensions import connection as _connection
 from psycopg2.extras import DictCursor
+from dotenv import load_dotenv
+
+BATCH_SIZE = 50
 
 
 @dataclass
@@ -19,54 +25,62 @@ class SQLiteMetadata:
 class PostgresSaver:
     connection: _connection
 
+    def __post_init__(self):
+        self.cursor = self.connection.cursor()
+
+    def _get_args(self, rows: list, args_string: str) -> str:
+        return ','.join(self.cursor.mogrify(args_string, item).decode() for item in rows)
+
     def save_all_data(self, data: SQLiteMetadata) -> None:
         try:
             for rows in data.movies:
-                for row in rows:
-                    self.connection.cursor().execute("""
-                insert into content.film_work
+                # This approach more faster then execute_batch() from psycopg.extras
+                # https://www.datacareer.de/blog/improve-your-psycopg2-executions-for-postgresql-in-python/
+                args = self._get_args(rows, "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+                self.cursor.execute(f"""
+                INSERT INTO content.film_work
                 (id, title, description, creation_date, certificate, file_path, rating, type, created, modified)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES {args}
                 ON CONFLICT (id) DO NOTHING
-                """, row)
+                """)
 
             for rows in data.genres:
-                for row in rows:
-                    self.connection.cursor().execute("""
+                args = self._get_args(rows, "(%s, %s, %s, %s, %s)")
+                self.cursor.execute(f"""
                 insert into content.genre
                 (id, name, description, created, modified)
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES {args}
                 ON CONFLICT (id) DO NOTHING
-                """, row)
+                """)
 
             for rows in data.persons:
-                for row in rows:
-                    self.connection.cursor().execute("""
+                args = self._get_args(rows, "(%s, %s, %s, %s, %s)")
+                self.cursor.execute(f"""
                 insert into content.person
                 (id, full_name, birth_date, created, modified)
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES {args}
                 ON CONFLICT (id) DO NOTHING
-                """, row)
+                """)
 
             for rows in data.movie_genre:
-                for row in rows:
-                    self.connection.cursor().execute("""
+                args = self._get_args(rows, "(%s, %s, %s, %s)")
+                self.cursor.execute(f"""
                 insert into content.genre_film_work
                 (id, film_work_id, genre_id, created)
-                VALUES (%s, %s, %s, %s)
+                VALUES {args}
                 ON CONFLICT (id) DO NOTHING
-                """, row)
+                """)
 
             for rows in data.movie_person:
-                for row in rows:
-                    self.connection.cursor().execute("""
+                args = self._get_args(rows, "(%s, %s, %s, %s, %s)")
+                self.cursor.execute(f"""
                 insert into content.person_film_work
                 (id, film_work_id, person_id, role, created)
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES {args}
                 ON CONFLICT (id) DO NOTHING
-                """, row)
+                """)
         except psycopg2.Error as exc:
-            print('Error occurred while writing: ', exc)
+            logging.critical('Error occurred while writing: ', exc)
 
 
 @dataclass
@@ -77,7 +91,7 @@ class SQLiteLoader:
         self.connection.row_factory = sqlite3.Row
         cursor = self.connection.cursor()
         cursor.execute(f'SELECT * FROM {table_name}')  # noqa: S608
-        while data := cursor.fetchmany(20):
+        while data := cursor.fetchmany(BATCH_SIZE):
             yield data
 
     def load_data(self):
@@ -90,7 +104,7 @@ class SQLiteLoader:
                 movie_genre=self.load_from_table('genre_film_work'),
             )
         except sqlite3.Error as exc:
-            print('Error occurred while reading: ', exc)
+            logging.critical('Error occurred while reading: ', exc)
 
 
 def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
@@ -101,14 +115,20 @@ def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
     postgres_saver.save_all_data(data)
 
 
+def env(key: str) -> str:
+    return os.environ[key]
+
+
 if __name__ == '__main__':
+    load_dotenv()
     dsl = {
-        'dbname': 'movies_database',
-        'user': 'app',
-        'password': '123qwe',
-        'host': 'localhost',
-        'port': 5432,
+        'dbname': env('DB_NAME'),
+        'user': env('DB_USER'),
+        'password': env('DB_PASSWORD'),
+        'host': env('DB_HOST'),
+        'port': env('DB_PORT'),
         'options': '-c search_path=content',
     }
-    with sqlite3.connect('db.sqlite') as sqlite_conn, psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
+    with closing(sqlite3.connect('db.sqlite')) as sqlite_conn, \
+         closing(psycopg2.connect(**dsl, cursor_factory=DictCursor)) as pg_conn:
         load_from_sqlite(sqlite_conn, pg_conn)
