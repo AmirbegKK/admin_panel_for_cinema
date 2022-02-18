@@ -47,7 +47,7 @@ class PostgresSaver:
                 """)
 
             for rows in data.genres:
-                args = self._get_args(rows, "(%s, %s, %s, %s, %s)")
+                args = self._get_args(rows, '(%s, %s, %s, %s, %s)')
                 self.cursor.execute(f"""
                 insert into content.genre
                 (id, name, description, created, modified)
@@ -56,7 +56,7 @@ class PostgresSaver:
                 """)
 
             for rows in data.persons:
-                args = self._get_args(rows, "(%s, %s, %s, %s, %s)")
+                args = self._get_args(rows, '(%s, %s, %s, %s, %s)')
                 self.cursor.execute(f"""
                 insert into content.person
                 (id, full_name, birth_date, created, modified)
@@ -65,7 +65,7 @@ class PostgresSaver:
                 """)
 
             for rows in data.movie_genre:
-                args = self._get_args(rows, "(%s, %s, %s, %s)")
+                args = self._get_args(rows, '(%s, %s, %s, %s)')
                 self.cursor.execute(f"""
                 insert into content.genre_film_work
                 (id, film_work_id, genre_id, created)
@@ -74,7 +74,7 @@ class PostgresSaver:
                 """)
 
             for rows in data.movie_person:
-                args = self._get_args(rows, "(%s, %s, %s, %s, %s)")
+                args = self._get_args(rows, '(%s, %s, %s, %s, %s)')
                 self.cursor.execute(f"""
                 insert into content.person_film_work
                 (id, film_work_id, person_id, role, created)
